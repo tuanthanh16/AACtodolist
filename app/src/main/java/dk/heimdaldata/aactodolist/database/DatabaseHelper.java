@@ -148,17 +148,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // manipulate Users table
     public boolean insertUser(String userName, String password) {
+        // create new user with name/password
+        // return true if successful or false if user does exist or db insert error
         // open the database in writing mode
         SQLiteDatabase db = this.getWritableDatabase();
-        // use ContentValues to insert data
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(USER_2, userName);
-        contentValues.put(USER_3, password);
-        long result = db.insert(USER_TABLE, null, contentValues);
-        if (result == -1) {
+        // check if username is already exist
+        String nameQuery = "select 1 from " + USER_TABLE + " where name = ?";
+        Cursor cursor = db.rawQuery(nameQuery, new String[] { userName });
+        if (cursor.getCount() > 0) {
+            // user exist
             return false;
         } else {
-            return true;
+            // user does not exist
+            // use ContentValues to insert data
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(USER_2, userName);
+            contentValues.put(USER_3, password);
+            long result = db.insert(USER_TABLE, null, contentValues);
+
+            if (result == -1) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

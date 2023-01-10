@@ -28,7 +28,12 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String user = txtUserName.getText().toString();
                 String password = txtPassword.getText().toString();
-                sqlDb.insertUser(user, password);
+                boolean result = sqlDb.insertUser(user, password);
+                if (result) {
+                    Toast.makeText(v.getContext(), "User created successful", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(v.getContext(), "Signup failed", Toast.LENGTH_LONG).show();
+                }
                 finish();
             }
         });
