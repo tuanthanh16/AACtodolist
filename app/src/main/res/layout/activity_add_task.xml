@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- EditText for getttaskEntrytask description input -->
+    <EditText
+        android:id="@+id/editTextTaskDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:hint="Task description"
+        android:paddingBottom="8dp" />
+    <!-- TextView and FrameLayout (which contains buttons) for Priority Selection -->
+    <TextView
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Priority"
+        android:textColor="@android:color/primary_text_light" />
+    <!-- RadioGroup for visible selection of a priority -->
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <RadioButton
+            android:id="@+id/taskHigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/purple_700"
+            android:checked="true"
+            android:text="High"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/taskMid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/purple_500"
+            android:text="Middle"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/taskLow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/purple_200"
+            android:text="Low"
+            android:textColor="@color/white" />
+    </RadioGroup>
+    <!-- Add button -->
+    <Button
+        android:id="@+id/saveButton"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/purple_200"
+        android:text="Add Task"
+        android:textColor="@android:color/primary_text_dark" />
+
+</LinearLayout>
