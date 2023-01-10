@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,12 +31,14 @@ import java.util.List;
 import dk.heimdaldata.aactodolist.database.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.MyItemClickListener {
+    public static String KEY_USER_ID = "USER_ID";
     FloatingActionButton fab;
     RecyclerView recyclerView;
     TaskAdapter adapter;
     AppDatabase mDb;
     DatabaseHelper sqlDb;
     List<TaskEntry> temp;
+    int userID;
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.MyIte
                                     description = intent.getStringExtra("DESC");
                                     priority = intent.getIntExtra("PRIORITY", 3);
                                     strDate = intent.getStringExtra("DATE");
-                                    boolean inserted = sqlDb.insertData(description, priority, strDate);
+                                    boolean inserted = sqlDb.insertData(description, priority, strDate, userID);
                                     if (inserted) {
                                         Toast.makeText(MainActivity.this, "data inserted", Toast.LENGTH_SHORT).show();
                                     }
@@ -124,8 +129,38 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.MyIte
         }).attachToRecyclerView(recyclerView);
         // initialize database
 //        sqlDb = new DatabaseHelper(this);
+        // get intent extra
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(KEY_USER_ID)) {
+            // have extra data
+            userID = intent.getIntExtra(KEY_USER_ID, 0);
+        }
         sqlDb = DatabaseHelper.getInstance(getApplicationContext());
 
+    }
+
+    // override onCreateOptionMenu to get the option Menu
+    // --------------------------------------------------
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    // override onOptionsItemSelected to add logic when user click menu
+    // --------------------------------------------------------------
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.lock_menu:
+                Toast.makeText(this, "Menu clicked", Toast.LENGTH_LONG).show();
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -135,9 +170,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.MyIte
 
     }
 
+
     private void retrieveTasks() {
 
-        temp = sqlDb.getAllTasks();
+        temp = sqlDb.getAllTasksByUser(String.valueOf(userID));
         Log.d("MAIN", "retrieveTasks: ");
         adapter.setTaskLists(temp);
     }

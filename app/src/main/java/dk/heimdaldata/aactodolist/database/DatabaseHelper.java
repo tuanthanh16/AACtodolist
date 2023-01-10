@@ -28,6 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String COL_2 = "description";
     public static String COL_3 = "priority";
     public static String COL_4 = "updatedAt";
+    public static String COL_5 = "user_id";
+
     public static String USER_1 = "id";
     public static String USER_2 = "name";
     public static String USER_3 = "password";
@@ -54,7 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COL_2 + " TEXT," +
                 COL_3 + " INTEGER," +
-                COL_4 + " TEXT)";
+                COL_4 + " TEXT," +
+                COL_5 + " INTEGER)";
         db.execSQL(query);
         // create table users
         String query2 = "CREATE TABLE " + USER_TABLE + " (" +
@@ -71,12 +74,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String task_name, int priority, String date) {
+    public boolean insertData(String task_name, int priority, String date, int user_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, task_name);
         contentValues.put(COL_3, priority);
         contentValues.put(COL_4, date);
+        contentValues.put(COL_5, user_id);
         long result = db.insert(TODO_TABLE, null, contentValues);
         if (result == -1) {
             return false;
@@ -94,6 +98,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<TaskEntry> list = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor rs = db.rawQuery("select * from " + TODO_TABLE, null);
+        if (rs.getCount() == 0)
+            return null;
+        // while rs can moveToNext()
+        while (rs.moveToNext()) {
+            int id = rs.getInt(0);
+            String description = rs.getString(1);
+            int priority = rs.getInt(2);
+            String strDate = rs.getString(3);
+            Date date;
+            try {
+                date = new SimpleDateFormat("dd/MM/yyyy").parse(strDate);
+                TaskEntry taskEntry = new TaskEntry(id, description, priority, date);
+                list.add(taskEntry);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    // ------ GET ALL TASK BY USER -----------------
+    public List<TaskEntry> getAllTasksByUser (String user_id) {
+        // sql statement treat int as string???
+        List<TaskEntry> list = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor rs = db.rawQuery("select * from " + TODO_TABLE + " where " + COL_5 + " = ?", new String[] { user_id });
         if (rs.getCount() == 0)
             return null;
         // while rs can moveToNext()
@@ -145,17 +175,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         TaskEntry taskEntry = new TaskEntry(int_id, description, priority, date);
         return taskEntry;
     }
-
+    // ----------------------------
     // manipulate Users table
+    // ----------------------------
+    public boolean userExist(String userName) {
+        // return true if user exist
+        SQLiteDatabase db = this.getWritableDatabase();
+        String nameQuery = "select 1 from " + USER_TABLE + " where name = ?";
+        Cursor cursor = db.rawQuery(nameQuery, new String[] { userName });
+        if (cursor.getCount() > 0) {
+            // user exist
+            return true;
+        } else {
+            return false;
+        }
+    }
     public boolean insertUser(String userName, String password) {
         // create new user with name/password
         // return true if successful or false if user does exist or db insert error
         // open the database in writing mode
         SQLiteDatabase db = this.getWritableDatabase();
         // check if username is already exist
-        String nameQuery = "select 1 from " + USER_TABLE + " where name = ?";
-        Cursor cursor = db.rawQuery(nameQuery, new String[] { userName });
-        if (cursor.getCount() > 0) {
+        if ( userExist(userName) ) {
             // user exist
             return false;
         } else {
@@ -172,5 +213,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return true;
             }
         }
+    }
+
+    public String getUserPassword (String userName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String nameQuery = "select password from " + USER_TABLE + " where name = ?";
+        String password;
+        Cursor cursor = db.rawQuery(nameQuery, new String[] { userName });
+        // check if user account exist
+        if (cursor.getCount() == 0) {
+            // no user found
+            password = "";
+        } else {
+            cursor.moveToFirst();
+            password = cursor.getString(0);
+        }
+        return password;
+    }
+
+    public int getUserId(String userName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select id from " + USER_TABLE + " where name = ?";
+        int id = -1;
+        if (userExist(userName)) {
+            Cursor cursor = db.rawQuery(query, new String[] { userName });
+            cursor.moveToFirst();
+            id = cursor.getInt(0);
+        }
+        return id;
     }
 }

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/drawable/ic_baseline_lock_24.xml" value="0.269" />
         <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/layout/activity_add_task.xml" value="0.41200828157349895" />
         <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/layout/activity_add_tasks.xml" value="0.41200828157349895" />
         <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/layout/activity_login.xml" value="0.465625" />
@@ -11,6 +12,7 @@
         <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/layout/activity_signup.xml" value="0.465625" />
         <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/layout/activity_sqlite.xml" value="0.465625" />
         <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/layout/task_layout.xml" value="0.4502262443438914" />
+        <entry key="..\:/Development/TNew/AACTodoList/app/src/main/res/menu/option_menu.xml" value="0.23333333333333334" />
       </map>
     </option>
   </component>

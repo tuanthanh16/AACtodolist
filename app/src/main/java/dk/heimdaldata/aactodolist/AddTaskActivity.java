@@ -99,20 +99,8 @@ public class AddTaskActivity extends AppCompatActivity {
         String strDate = dateFormat.format(date);
         // final ???
         TaskEntry taskEntry = new TaskEntry(description, priority, date);
-//        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (taskId == DEFAULT_TASK_ID) {
-//                    mDb.taskDao().insertTask(taskEntry);
-//                } else {
-//                    taskEntry.setId(taskId);
-//                    mDb.taskDao().updateTask(taskEntry);
-//                }
-//
-//                finish();
-//            }
-//        });
         //send data back to Main Activity
+        // dont need UserID because it will be handle in Main Activity
         Intent intent = new Intent();
         intent.putExtra("DESC", description);
         intent.putExtra("PRIORITY", priority);
